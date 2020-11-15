@@ -1,0 +1,23 @@
+{
+    "clients" : [	   
+            { 	
+                "firstName" : "John",  
+                "lastName"  : "Doe",
+                "email"     : "Jdoe@gmail", 
+                "street"    : "Washington Street14" },
+                
+            {	"firstName" : "Mike",                	
+                "lastName"  : "Doe",
+                "email"     : "Jdoe@gmail",
+                "street" : "Washington Kstret"}                        
+    ],
+    "orders" : [ 
+                        { "user" :  "John", 
+                          "product" : "Software Suit", 
+                        "date"  : "2015-10-1 3:00 PM GMT+1:00"},
+
+                        { "user" :  "Mike", 
+                          "product" : "Software Suit II", 
+                        "date"  : "2015-10-1 4:00 PM GMT+2:00"}
+               ]
+}
