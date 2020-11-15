@@ -97,17 +97,46 @@ final public class H2Utils {
     
     public static void dropTableSql(String tableName) 
     {
-    	final String DROP_TABLE_NAME = String.format("drop table clients if exists", tableName);    	
+    	final String DROP_TABLE_NAME = String.format("drop table if exists %s cascade", tableName);    	
     	
     	try(Connection connection = getConnection();
     		PreparedStatement preparedStatement = connection.prepareStatement(DROP_TABLE_NAME);){
     		logger.log(Level.INFO, "Dropping Table " + tableName + " ...");
-            preparedStatement.execute();
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
         }
     }
     
+    public static void joinTables(String tableOrders, String tableClients) 
+    {
+    	final String JOIN_QUERY = String.format(
+    							"select product, date, name, sname, street\n"
+				    			+ "FROM %s AS or\n"
+				    			+ "JOIN %s AS cl\n"
+				    			+ "ON or.user = cl.name", tableOrders, tableClients
+				    			);
+
+    	
+    	try(Connection connection = getConnection();
+    		PreparedStatement preparedStatement = connection.prepareStatement(JOIN_QUERY);
+        	ResultSet rs = preparedStatement.executeQuery();)
+    	{
+    		//Processing the ResultSet object for COLUMN names and entries
+            while (rs.next()) {
+            	ResultSetMetaData metadata = rs.getMetaData();
+                int columnCount = metadata.getColumnCount();
+                
+                for (int i=1; i<=columnCount; i++) 
+                {
+                    System.out.println(" " + rs.getMetaData().getColumnName(i) + "=" + rs.getObject(i));
+                }
+                System.out.println();
+            }
+        } catch (SQLException e) {
+        	printSQLException(e);
+        }
+    }
     public static void insertTableSql(String tableName, Object obj) throws ClassCastException
     {
     	String _type = null;
@@ -218,7 +247,7 @@ final public class H2Utils {
     public static void prinTableSql(String tableName) 
     {
     	final String CLIENTS_QUERY = "select name, sname, email, street from clients";    	
-        final String ORDERS_QUERY = "select user, product, date from orders where id =?";    	
+        final String ORDERS_QUERY = "select user, product, date from orders";    	
         
         
         String READ_TABLE_QUERY = (tableName.equals("clients")) ? CLIENTS_QUERY : ORDERS_QUERY;

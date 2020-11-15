@@ -25,9 +25,6 @@ import java.sql.SQLException;
 
 class Cat extends Object{}
 
-
-
-
 public class Main {
 	
 	public static void main(String[] args) throws FileNotFoundException {		
@@ -64,14 +61,22 @@ public class Main {
 		order2.setProduct("MAKITA");
 		order2.setDate(new Date(1));
 		
-		
 		H2Utils.dropTableSql("clients");
-
+		H2Utils.dropTableSql("orders");
+				
 		H2Utils.createTable("clients");	
-		
 		H2Utils.insertTableSql("clients", client);
 		H2Utils.insertTableSql("clients", client1);
-		H2Utils.prinTableSql("clients");
+		
+		H2Utils.createTable("orders");	
+		H2Utils.insertTableSql("orders", order1);
+		H2Utils.insertTableSql("orders", order2);
+		
+		H2Utils.prinTableSql("orders");
+		
+		
+//		H2Utils.joinTables();
+		H2Utils.joinTables("orders", "clients");
 		System.exit(0);
 
 		
