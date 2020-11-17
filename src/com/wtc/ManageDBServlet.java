@@ -50,7 +50,7 @@ public class ManageDBServlet extends HttpServlet {
 		final String STATIC_FILE_DIR = properties.getProperty("STATIC_FILE_DIR");
 		final String FILE_NAME = properties.getProperty("FILE_NAME");
 
-		H2Utils._initialize();
+		H2Utils._initialize(); H2Utils._flush();
 		File file = new File(STATIC_FILE_DIR + FILE_NAME); 
 		// assumes the current class is called MyLogger
 		
@@ -91,15 +91,7 @@ public class ManageDBServlet extends HttpServlet {
 		H2Utils.prinTableSql("orders");
 		H2Utils.joinTables("orders", "clients");
 		
-		
-		dbList = H2Utils.fetchTableSql("transactions");
-
-		for(Map item: dbList) {
-			System.out.println(Arrays.asList(item)); // method 1
-		}
-		
-		request.setAttribute("keyList", dbList);//Put list collection data into request for sharing
-		request.getRequestDispatcher("/index2.jsp").forward(request, response);
+		request.getRequestDispatcher("/index.jsp").forward(request, response);
 	}
 
 	/**

@@ -11,10 +11,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
+
 /**
  * java util imports
  */
@@ -24,11 +22,8 @@ import java.util.logging.Logger;
 /**
  * fasterxml jackson imports
  */
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import org.json.simple.JSONObject;
-
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -64,7 +59,7 @@ final public class H2Utils {
     private static final String INSERT_TRANSACTIONS_SQL = "INSERT INTO transactions" + 
     		"  (name, sname, email, street, product, date) VALUES " +
     		 " (?, ?, ?, ?, ?, ?);";
-	
+
 	public static void _initialize() {
 		Properties properties;
 		try {
@@ -76,9 +71,10 @@ final public class H2Utils {
 			logger.log(Level.WARNING, e.getMessage());
 		}
 
-
 		logger.log(Level.INFO, "H2 Database Initialized!");
-		
+	}
+	
+	public static void _flush() {
 		/**
 		 * Flush the H2 DB tables, if exist
 		 * */
@@ -87,6 +83,9 @@ final public class H2Utils {
 		dropTableSql("orders");
 		dropTableSql("transactions");
 		
+		/**
+		 * Recreate H2 Database Tables
+		 * */
 		H2Utils.createTable("clients");	
 		H2Utils.createTable("orders");	
 		H2Utils.createTable("transactions");
@@ -298,41 +297,41 @@ final public class H2Utils {
         } 
     }
     
-    public static List<Map> fetchTableSql(String tableName) 
-    {
-    	final String finalTableQuery = String.format("select name, sname, email, street, product, date from %s", tableName);
-    	List<Map> resultList = new ArrayList<Map>();
-    	JSONObject JsonObj = null;
-    	String ColumnName=null, ColumnContent=null; 
-    	
-    	try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(finalTableQuery);
-    		ResultSet rs = preparedStatement.executeQuery();)
-    		{
-	    		System.out.println("Reading Table " + tableName + " ...");
-	    		
-	    		int id_unique=1, columnCount=0;
-	    		
-	    		//Processing the ResultSet object for COLUMN names and entries
-	            while (rs.next()) {
-	            	ResultSetMetaData metadata = rs.getMetaData();
-	                columnCount = metadata.getColumnCount();
-	                
-	                JsonObj = new JSONObject();
-	                JsonObj.put("id", id_unique++);
-	                for (int i=1; i<=columnCount; i++) 
-	                {
-	                	ColumnName = rs.getMetaData().getColumnName(i);
-	                	ColumnContent = (String) rs.getObject(i);
-	                    JsonObj.put(ColumnName.toLowerCase(), ColumnContent);
-	                }
-	            	resultList.add(JsonObj);
-	            }
-	        } catch (SQLException e) {
-            printSQLException(e);
-        }
-		return resultList;
-    }
+//    public static List<Map> fetchTableSql(String tableName) 
+//    {
+//    	final String finalTableQuery = String.format("select name, sname, email, street, product, date from %s", tableName);
+//    	List<Map> resultList = new ArrayList<Map>();
+//    	JSONObject JsonObj = null;
+//    	String ColumnName=null, ColumnContent=null; 
+//    	
+//    	try(Connection connection = getConnection();
+//            PreparedStatement preparedStatement = connection.prepareStatement(finalTableQuery);
+//    		ResultSet rs = preparedStatement.executeQuery();)
+//    		{
+//	    		System.out.println("Reading Table " + tableName + " ...");
+//	    		
+//	    		int id_unique=1, columnCount=0;
+//	    		
+//	    		//Processing the ResultSet object for COLUMN names and entries
+//	            while (rs.next()) {
+//	            	ResultSetMetaData metadata = rs.getMetaData();
+//	                columnCount = metadata.getColumnCount();
+//	                
+//	                JsonObj = new JSONObject();
+//	                JsonObj.put("id", id_unique++);
+//	                for (int i=1; i<=columnCount; i++) 
+//	                {
+//	                	ColumnName = rs.getMetaData().getColumnName(i);
+//	                	ColumnContent = (String) rs.getObject(i);
+//	                    JsonObj.put(ColumnName.toLowerCase(), ColumnContent);
+//	                }
+//	            	resultList.add(JsonObj);
+//	            }
+//	        } catch (SQLException e) {
+//            printSQLException(e);
+//        }
+//		return resultList;
+//    }
     
     
     public static void prinTableSql(String tableName) 
