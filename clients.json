@@ -8,8 +8,12 @@
                 
             {	"firstName" : "Mike",                	
                 "lastName"  : "Doe",
-                "email"     : "Jdoe@gmail",
-                "street" : "Washington Kstret"}                        
+                "email"     : "Mdoe@gmail",
+                "street" : "Washington Kstret"},
+            {	"firstName" : "Stephen",                	
+                "lastName"  : "Doe",
+                "email"     : "Sdoe@gmail",
+                "street" : "Washington Kstret"}
     ],
     "orders" : [ 
                         { "user" :  "John", 
@@ -18,6 +22,10 @@
 
                         { "user" :  "Mike", 
                           "product" : "Software Suit II", 
+                        "date"  : "2015-10-1 4:00 PM GMT+2:00"},
+                        { "user" :  "Stephen", 
+                          "product" : "Software Suit III", 
                         "date"  : "2015-10-1 4:00 PM GMT+2:00"}
+                        
                ]
 }

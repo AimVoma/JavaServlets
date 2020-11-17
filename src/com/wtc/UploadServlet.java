@@ -54,54 +54,8 @@ public class UploadServlet extends HttpServlet {
         
         request.setAttribute("message", "Upload has been done successfully!");
         response.sendRedirect(request.getContextPath() + "/ManageDBServlet");
-        
-//        getServletContext().getRequestDispatcher("/message.jsp").forward(request, response);
-        
-        
     }
-    private void readFile() {
-		// TODO Auto-generated method stub
-    	String STATIC_FILE_DIR = "/home/aimilios/eclipse-workspace-REST/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/JavaServlets/uploadFiles/";
-		JSONParser parser = new JSONParser();		
-		
-		File file = new File(STATIC_FILE_DIR + "clients.json"); 
-		// assumes the current class is called MyLogger
-		
-		Logger logger = Logger.getLogger("ServletLogger");
-		
-		try {			
-			JSONObject Jobj = (JSONObject) parser.parse(new FileReader(file));
-			
-			logger.log(Level.INFO, Jobj.toJSONString());
-
-			
-			logger.log(Level.INFO, "Parsing Json File ... ");
-
-			try {
-					JSONArray clients = (JSONArray) Jobj.get("clients");
-					
-					Iterator<String> iterator = clients.iterator();
-		            while (iterator.hasNext()) {
-		                System.out.println(iterator.next());
-		            }
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-			
-		logger.log(Level.INFO, "Processing ");
-		  
-	}
+   
 	/**
      * Extracts file name from HTTP header content-disposition
      */
