@@ -3,29 +3,40 @@
             { 	
                 "firstName" : "John",  
                 "lastName"  : "Doe",
-                "email"     : "Jdoe@gmail", 
-                "street"    : "Washington Street14" },
+                "email"     : "Jdoe@gmail.com", 
+                "street"    : "Washington Street 14" },
                 
             {	"firstName" : "Mike",                	
                 "lastName"  : "Doe",
-                "email"     : "Mdoe@gmail",
-                "street" : "Washington Kstret"},
+                "email"     : "Mdoe@outlook.com",
+                "street" : 	  "Kstret 18"},
+                
             {	"firstName" : "Stephen",                	
                 "lastName"  : "Doe",
                 "email"     : "Sdoe@gmail",
-                "street" : "Washington Kstret"}
+                "street" :    "Wallstreet 15"},
+            
+            {	"firstName" : "Thomas",                	
+                "lastName"  : "Doe",
+                "email"     : "Sdoe@gmail",
+                "street" :    "St Thomas 20"}
     ],
     "orders" : [ 
-                        { "user" :  "John", 
-                          "product" : "Software Suit", 
-                        "date"  : "2015-10-1 3:00 PM GMT+1:00"},
+                 {	"user" :  "John", 
+					"product" : "Software Suit I", 
+					"date"  : "2015-10-1 3:00 PM GMT+1:00"},
 
-                        { "user" :  "Mike", 
-                          "product" : "Software Suit II", 
-                        "date"  : "2015-10-1 4:00 PM GMT+2:00"},
-                        { "user" :  "Stephen", 
-                          "product" : "Software Suit III", 
-                        "date"  : "2015-10-1 4:00 PM GMT+2:00"}
+                 {	"user" :  "Mike", 
+					"product" : "Software Suit II", 
+					"date"  : "2016-10-1 4:00 PM GMT+2:00"},
+                 
+                 {  "user" :  "Stephen", 
+					"product" : "Software Suit III", 
+					"date"  : "2017-10-1 4:00 PM GMT+2:00"},
+					
+				 {  "user" :  "Thomas", 
+					"product" : "Software Suit IV", 
+					"date"  : "2019-10-1 4:00 PM GMT+2:00"}
                         
-               ]
+              ]
 }

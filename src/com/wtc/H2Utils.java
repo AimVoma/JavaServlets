@@ -28,38 +28,60 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
+/**
+ * The Class H2Utils is a utility class to manage all the necessary H2 Database operations.
+ */
 final public class H2Utils {
 	
+    /** The url of H2 testing In-Memory Database */
     private static String URL = null;
-    private static String Username = null;
-    private static String Password = null;
-	private static Logger logger = Logger.getLogger("ServletLogger");
     
+    /** The Username of H2 testing In-Memory Database  */
+    private static String Username = null;
+    
+    /** The Password of H2 testing In-Memory Database  */
+    private static String Password = null;
+	
+	/** The logger, logging INFO and WARNING logging messages */
+	private static Logger logger = Logger.getLogger("ServletLogger");
+	
+	/** The initialized boolean value of H2 Database */
+	private static boolean _initialized = false;
+    
+    /** The Constant CREATE TABLE CLIENTS sql */
     private static final String createTableClientsSQL = "create table if not exists clients (\r\n" + "  id identity primary key,\r\n" +
             "  name varchar(20),\r\n" + "  sname varchar(20),\r\n" + "  email varchar(20),\r\n" +
             "  street varchar(20)\r\n" + "  );";
     
+    /** The Constant CREATE TABLE ORDERS sql */
     private static final String createTableOrdersSQL = "create table if not exists orders (\r\n" + "  id identity primary key,\r\n" +
             "  user varchar(20),\r\n" + "  product varchar(20),\r\n" + "  date varchar(20),\r\n" +
             "  );";
     
+    /** The Constant CREATE TABLE TRANSACTIONS sql */
     private static final String createTableTransactionsSQL = "create table if not exists transactions (\r\n" + "  id identity primary key,\r\n" +
             "  name varchar(20),\r\n" + "  sname varchar(20),\r\n" + "  email varchar(20),\r\n" +
             "  street varchar(20),\r\n" + "  product varchar(20),\r\n" + "  date varchar(20)\r\n" +  
             "  );";
     
+    /** The Constant INSERT INTO CLIENTS sql */
     private static final String INSERT_CLIENTS_SQL = "INSERT INTO clients" + 
     		"  (name, sname, email, street) VALUES " +
     		 " (?, ?, ?, ?);";
     
+    /** The Constant INSERT INTO ORDERS sql */
     private static final String INSERT_ORDERS_SQL = "INSERT INTO orders" + 
     		"  (user, product, date) VALUES " +
     		 " (?, ?, ?);";
     
+    /** The Constant INSERT INTO TRANSACTIONS sql */
     private static final String INSERT_TRANSACTIONS_SQL = "INSERT INTO transactions" + 
     		"  (name, sname, email, street, product, date) VALUES " +
     		 " (?, ?, ?, ?, ?, ?);";
 
+	/**
+	 * Initialize H2 DB & Set _initialized boolean state
+	 */
 	public static void _initialize() {
 		Properties properties;
 		try {
@@ -67,6 +89,7 @@ final public class H2Utils {
 			URL = properties.getProperty("DB_URL");
 			Username = properties.getProperty("DB_USERNAME");
 			Password = properties.getProperty("DB_PASSWORD");
+			_initialized = true;
 		} catch (FileNotFoundException e) {
 			logger.log(Level.WARNING, e.getMessage());
 		}
@@ -74,6 +97,9 @@ final public class H2Utils {
 		logger.log(Level.INFO, "H2 Database Initialized!");
 	}
 	
+	/**
+	 * Flush H2 DB If needed(Tables, clients-orders-transactions)
+	 */
 	public static void _flush() {
 		/**
 		 * Flush the H2 DB tables, if exist
@@ -90,22 +116,39 @@ final public class H2Utils {
 		H2Utils.createTable("orders");	
 		H2Utils.createTable("transactions");
 	}
-
+	
+	/**
+	 * Return the initialization status of H2.
+	 *
+	 * @return the status
+	 */
+	public static boolean getStatus() {
+		return _initialized;
+	}
+	
+    /**
+     * Gets the connection.
+     *
+     * @return the connection
+     */
     public static Connection getConnection() {
         Connection connection = null;
         try {
         	Class.forName("org.h2.Driver");
-			logger.log(Level.INFO, "Connecting to JDBC driver");
             connection = DriverManager.getConnection(URL, Username, Password);
         } catch (SQLException e) {
         	printSQLException(e);
         } catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, e.getMessage());
 		}
         return connection;
     }
     
+    /**
+     * Creates TABLE in H2 Database.
+     *
+     * @param tableName the table name
+     */
     public static void createTable(String tableName) 
     {
     	String createTableSQL = null;
@@ -132,7 +175,12 @@ final public class H2Utils {
         }
     }
     
-    public static void dropTableSql(String tableName) 
+    /**
+     * Drops TABLE sql in H2 Database.
+     *
+     * @param tableName the table name
+     */
+    public static void dropTableSql(String tableName)
     {
     	final String DROP_TABLE_NAME = String.format("drop table if exists %s cascade", tableName);    	
     	
@@ -146,6 +194,13 @@ final public class H2Utils {
         }
     }
     
+    /**
+     * JOINs TABLES ORDERS & CLIENTS, while mapping the resulted JOIN Query set 
+     * to Transaction object through JSONObject mapper. And inserting new Transaction 
+     * entry in H2 database.
+     * @param tableOrders the table orders
+     * @param tableClients the table clients
+     */
     public static void joinTables(String tableOrders, String tableClients) 
     {
     	String COLUMN_NAME = null;
@@ -189,6 +244,14 @@ final public class H2Utils {
 		}
     }
     
+    /**
+     * Inserts on demand a new entry into one of the TABLEs(CLIENTS, ORDERS, TRANSACTIONS)
+     * in H2 database.
+     * @param tableName the table name
+     * @param obj the obj
+     * @throws ClassCastException the class cast exception
+     * @throws UpdateTableEntryException the update table entry exception
+     */
     public static void insertTableSql(String tableName, Object obj) throws ClassCastException, UpdateTableEntryException
     {
     	String _type = null, insertTableSQLString = null;
@@ -297,43 +360,10 @@ final public class H2Utils {
         } 
     }
     
-//    public static List<Map> fetchTableSql(String tableName) 
-//    {
-//    	final String finalTableQuery = String.format("select name, sname, email, street, product, date from %s", tableName);
-//    	List<Map> resultList = new ArrayList<Map>();
-//    	JSONObject JsonObj = null;
-//    	String ColumnName=null, ColumnContent=null; 
-//    	
-//    	try(Connection connection = getConnection();
-//            PreparedStatement preparedStatement = connection.prepareStatement(finalTableQuery);
-//    		ResultSet rs = preparedStatement.executeQuery();)
-//    		{
-//	    		System.out.println("Reading Table " + tableName + " ...");
-//	    		
-//	    		int id_unique=1, columnCount=0;
-//	    		
-//	    		//Processing the ResultSet object for COLUMN names and entries
-//	            while (rs.next()) {
-//	            	ResultSetMetaData metadata = rs.getMetaData();
-//	                columnCount = metadata.getColumnCount();
-//	                
-//	                JsonObj = new JSONObject();
-//	                JsonObj.put("id", id_unique++);
-//	                for (int i=1; i<=columnCount; i++) 
-//	                {
-//	                	ColumnName = rs.getMetaData().getColumnName(i);
-//	                	ColumnContent = (String) rs.getObject(i);
-//	                    JsonObj.put(ColumnName.toLowerCase(), ColumnContent);
-//	                }
-//	            	resultList.add(JsonObj);
-//	            }
-//	        } catch (SQLException e) {
-//            printSQLException(e);
-//        }
-//		return resultList;
-//    }
-    
-    
+    /**
+     * Prints one of the transient TABLEs(CLIENTS, ORDERS) content for DEBUG reasons.
+     * @param tableName the table name
+     */
     public static void prinTableSql(String tableName) 
     {
     	final String CLIENTS_QUERY = "select name, sname, email, street from clients";    	
@@ -368,6 +398,11 @@ final public class H2Utils {
         }
     }
     
+    /**
+     * Prints SQLException Handling module
+     * { SQLState, Err Code, Message, Cause }
+     * @param ex the SQLException
+     */
     public static void printSQLException(SQLException ex) {
         for (Throwable e : ex) {
             if (e instanceof SQLException) {

@@ -10,10 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 
+/**
+ * Web Servlet class which manages the File Upload Servlet 3.0 configuration
+ * @MultipartConfig for MIME type of data.
+ */
 @WebServlet("/UploadServlet")
 @MultipartConfig(fileSizeThreshold=1024*1024*2, // 2MB
-                 maxFileSize=1024*1024*10,      // 10MB
-                 maxRequestSize=1024*1024*50)   // 50MB
+                 maxFileSize=1024*1024*4,      //  4MB
+                 maxRequestSize=1024*1024*10)   // 10MB
 public class UploadServlet extends HttpServlet {
     /**
      * Name of the directory where uploaded files will be saved, relative to
@@ -22,7 +26,13 @@ public class UploadServlet extends HttpServlet {
     private static final String SAVE_DIR = "uploadFiles";
      
     /**
-     * handles file upload
+     * doPost implemented HTTP method which creates the upload file directory
+     * and parsing the request in Parts.
+     *
+     * @param request the HTTPrequest
+     * @param response the HTTPresponse
+     * @throws ServletException singaling that the servlet exception
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // gets absolute path of the web application
@@ -42,13 +52,15 @@ public class UploadServlet extends HttpServlet {
             part.write(savePath + File.separator + fileName);
         }
         
-        request.setAttribute("message", "Upload has been done successfully!");
+        // Redirect->ManageDBServlet
         response.sendRedirect(request.getContextPath() + "/ManageDBServlet");
     }
    
 	/**
-     * Extracts file name from HTTP header content-disposition
-     */
+	 * Extracts file name parts from HTTP header content-disposition
+	 * @param part the part
+	 * @return the string
+	 */
     private String extractFileName(Part part) {
         String contentDisp = part.getHeader("content-disposition");
         String[] items = contentDisp.split(";");

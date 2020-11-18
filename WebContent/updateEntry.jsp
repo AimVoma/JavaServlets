@@ -21,9 +21,33 @@ try{
 	while(resultSet.next()){
 	%>
 	<html>
+	
+<head> 
+  <title>Java Servlets</title> 
+  <style> 
+    body { 
+		text-align:center; 
+    }
+   	h1 {
+   		margin-top:5em; 
+        color:green; 
+      }
+	form {
+		margin-top:2.5em;
+	}
+	input[type=submit] {
+	    padding:5px 15px; 
+	    background:#ccc; 
+	    border:0 none;
+	    cursor:pointer;
+	    -webkit-border-radius: 8px;
+	    border-radius: 8px; 
+	}
+  </style> 
+</head> 
 	<body>
-	<h1>Update data from database in jsp</h1>
-	<form method="post" action="updateDB.jsp">
+	<h1>Update Transaction Entry from H2 database</h1>
+	<form method="post" action="updateEntryDB.jsp">
 		<input type="hidden" name="id" value="<%=resultSet.getString("id") %>">
 		H2 Index:<br>
 		<input type="text" name="id" value="<%=resultSet.getString("id") %>" readonly>

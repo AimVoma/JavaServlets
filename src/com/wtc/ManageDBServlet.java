@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,21 +18,28 @@ import org.json.simple.parser.ParseException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+// TODO: Auto-generated Javadoc
 /**
- * Servlet implementation class ManageDBServlet
+ * Servlet implementation class ManageDBServlet.
  */
+/**
+ * @author aimilios
+ *
+ */
+
 @WebServlet("/ManageDBServlet")
 public class ManageDBServlet extends HttpServlet {
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
        
     /**
+     * Instantiates a new manage DB servlet.
+     *
      * @see HttpServlet#HttpServlet()
      */
     public ManageDBServlet() {
@@ -43,9 +48,18 @@ public class ManageDBServlet extends HttpServlet {
     }
 
 	/**
+	 * Main Servlet GET method to process the uploaded static file and to create JSON object mapper
+	 * to instantiate Database Tables Entry Objects(Clients, Orders, Transactions). Since the tables
+	 * and entries are sucesfully registered, the Servlet performs JOIN operations between tables
+	 * to create TRANSACTIONS TABLE.
+	 * @param request the request
+	 * @param response the response
+	 * @throws ServletException the servlet exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
 		Properties properties = PropertiesManager.getConfig();
 		final String STATIC_FILE_DIR = properties.getProperty("STATIC_FILE_DIR");
 		final String FILE_NAME = properties.getProperty("FILE_NAME");
@@ -62,6 +76,7 @@ public class ManageDBServlet extends HttpServlet {
 
 			logger.log(Level.INFO, "Parsing Json File ... ");
 			
+			// Retrieve Clients as JsonArray and parse one by one
 			JSONArray clients = (JSONArray) JsonObject.get("clients");
 		    for (int i = 0; i < clients.size(); i++)
 		    {
@@ -69,7 +84,8 @@ public class ManageDBServlet extends HttpServlet {
 		        Client client = objectMapper.readValue(jsonEntry.toJSONString(), Client.class);
 		        H2Utils.insertTableSql("clients", client);
 		    }
-		    	    		    
+		    
+		    // Retrieve Orders as JsonArray and parse one by one
 			JSONArray orders = (JSONArray) JsonObject.get("orders");
 		    for (int i = 0; i < orders.size(); i++)
 		    {
@@ -83,23 +99,14 @@ public class ManageDBServlet extends HttpServlet {
 			logger.log(Level.WARNING, io.getMessage());
 		} catch (ParseException pe) {
 			logger.log(Level.WARNING, pe.getMessage());
-		}
-
-		List<Map> dbList = new ArrayList<Map>();
-
-		H2Utils.prinTableSql("clients");
-		H2Utils.prinTableSql("orders");
+		} catch (ClassCastException cc) {
+			logger.log(Level.WARNING, cc.getMessage());
+		} catch (UpdateTableEntryException utee) {
+			logger.log(Level.WARNING, utee.getMessage());
+		} 
+		
 		H2Utils.joinTables("orders", "clients");
 		
 		request.getRequestDispatcher("/index.jsp").forward(request, response);
 	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
 }
