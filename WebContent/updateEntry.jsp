@@ -77,7 +77,8 @@ try{
 	} catch (SQLException sqlE) {
 		H2Utils.printSQLException(sqlE);
 	} finally{
-		connection.close();
+		if (connection != null)
+			connection.close();
 	}
 %>
 </body>

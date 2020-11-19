@@ -18,25 +18,25 @@
             
             {	"firstName" : "Thomas",                	
                 "lastName"  : "Doe",
-                "email"     : "Sdoe@gmail",
+                "email"     : "Tdoe@gmail",
                 "street" :    "St Thomas 20"}
     ],
     "orders" : [ 
-                 {	"user" :  "John", 
-					"product" : "Software Suit I", 
-					"date"  : "2015-10-1 3:00 PM GMT+1:00"},
+             {	"user" :  "John", 
+				"product" : "Software Suit I", 
+				"date"  : "2015-10-1 3:00 PM GMT+1:00"},
 
-                 {	"user" :  "Mike", 
-					"product" : "Software Suit II", 
-					"date"  : "2016-10-1 4:00 PM GMT+2:00"},
-                 
-                 {  "user" :  "Stephen", 
-					"product" : "Software Suit III", 
-					"date"  : "2017-10-1 4:00 PM GMT+2:00"},
-					
-				 {  "user" :  "Thomas", 
-					"product" : "Software Suit IV", 
-					"date"  : "2019-10-1 4:00 PM GMT+2:00"}
-                        
-              ]
+             {	"user" :  "Mike", 
+				"product" : "Software Suit II", 
+				"date"  : "2016-10-1 4:00 PM GMT+2:00"},
+             
+             {  "user" :  "Stephen", 
+				"product" : "Software Suit III", 
+				"date"  : "2017-10-1 4:00 PM GMT+2:00"},
+				
+			 {  "user" :  "Thomas", 
+				"product" : "Software Suit IV", 
+				"date"  : "2019-10-1 4:00 PM GMT+2:00"}
+                    
+  	]
 }

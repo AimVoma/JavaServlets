@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * The Class H2Utils is a utility class to manage all the necessary H2 Database operations.
  */
-final public class H2Utils {
+public final class H2Utils {
 	
     /** The url of H2 testing In-Memory Database */
     private static String URL = null;
@@ -61,8 +61,8 @@ final public class H2Utils {
     /** The Constant CREATE TABLE TRANSACTIONS sql */
     private static final String createTableTransactionsSQL = "create table if not exists transactions (\r\n" + "  id identity primary key,\r\n" +
             "  name varchar(20),\r\n" + "  sname varchar(20),\r\n" + "  email varchar(20),\r\n" +
-            "  street varchar(20),\r\n" + "  product varchar(20),\r\n" + "  date varchar(20)\r\n" +  
-            "  );";
+            "  street varchar(20),\r\n" + "  product varchar(20),\r\n" + "  date varchar(20),\r\n" +  
+            "  visible boolean \r\n" + ");";
     
     /** The Constant INSERT INTO CLIENTS sql */
     private static final String INSERT_CLIENTS_SQL = "INSERT INTO clients" + 
@@ -76,8 +76,8 @@ final public class H2Utils {
     
     /** The Constant INSERT INTO TRANSACTIONS sql */
     private static final String INSERT_TRANSACTIONS_SQL = "INSERT INTO transactions" + 
-    		"  (name, sname, email, street, product, date) VALUES " +
-    		 " (?, ?, ?, ?, ?, ?);";
+    		"  (name, sname, email, street, product, date, visible) VALUES " +
+    		 " (?, ?, ?, ?, ?, ?, ?);";
 
 	/**
 	 * Initialize H2 DB & Set _initialized boolean state
@@ -129,7 +129,7 @@ final public class H2Utils {
     /**
      * Gets the connection.
      *
-     * @return the connection
+     * @return the connection session 
      */
     public static Connection getConnection() {
         Connection connection = null;
@@ -166,7 +166,7 @@ final public class H2Utils {
     			createTableSQL = createTableTransactionsSQL;
     			break;
     		default:
-    			logger.log(Level.WARNING, String.format("createTable Tablename: %s does not exist, resulting in SQL exception", tableName));
+    			logger.log(Level.WARNING, String.format("createTable Table name: %s does not exist, resulting in SQL exception", tableName));
     			break;
     		}
     		statement.execute(createTableSQL);
@@ -229,7 +229,6 @@ final public class H2Utils {
                 {
                 	COLUMN_NAME = rs.getMetaData().getColumnName(i);
                 	COLUMN_CONTENT = (String) rs.getObject(i);
-                    System.out.println(COLUMN_NAME + " : " +  COLUMN_CONTENT);
                     JsonObj.put(COLUMN_NAME.toLowerCase(), COLUMN_CONTENT);
                 }
                 Transaction transaction = objectMapper.readValue(JsonObj.toJSONString(), Transaction.class);                
@@ -279,8 +278,6 @@ final public class H2Utils {
     	try (Connection connection = getConnection();
     		 PreparedStatement preparedStatement = connection.prepareStatement(insertTableSQLString, Statement.RETURN_GENERATED_KEYS))
     	{
-    		System.out.println("Inserting Table " + tableName + " ...");
-
     		if (obj instanceof Client) {
     			client = (Client) obj;
     			_type = "client";
@@ -302,13 +299,13 @@ final public class H2Utils {
     			transaction = (Transaction) obj;
     			_type = "transaction";
     			
-				preparedStatement.setString(1, transaction.getName());
-				preparedStatement.setString(2, transaction.getSname());
-				preparedStatement.setString(3, transaction.getEmail());
-				preparedStatement.setString(4, transaction.getStreet());
-				preparedStatement.setString(5, transaction.getProduct());
-				preparedStatement.setDate(  6, transaction.getDate());
-    			
+				preparedStatement.setString( 1, transaction.getName());
+				preparedStatement.setString( 2, transaction.getSname());
+				preparedStatement.setString( 3, transaction.getEmail());
+				preparedStatement.setString( 4, transaction.getStreet());
+				preparedStatement.setString( 5, transaction.getProduct());
+				preparedStatement.setDate(   6, transaction.getDate());
+				preparedStatement.setBoolean(7, transaction.getVisibility());    			
     		}
     		else {
 				throw new ClassCastException("Only Client or Order Class Cast Accepted!");

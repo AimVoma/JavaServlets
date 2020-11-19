@@ -77,6 +77,7 @@ try{
 	resultSet = statement.executeQuery("select * from transactions");
 	while(resultSet.next()){
 	%>
+		<% if (!resultSet.getBoolean("visible")) continue;%>
 		<tr>
 		<td><%=resultSet.getString("id") %></td>
 		<td><%=resultSet.getString("name") %></td>
@@ -93,7 +94,8 @@ try{
 } catch (SQLException e) {
 	H2Utils.printSQLException(e);
 } finally{
-	connection.close();
+	if (connection != null)
+		connection.close();
 }
 %>
 </table>

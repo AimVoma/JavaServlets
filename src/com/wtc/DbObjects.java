@@ -25,6 +25,11 @@ class Transaction {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "GMT")
 	private Date date;
 	
+	private boolean visible=true;
+	
+	public boolean getVisibility() {
+		return visible;
+	}
 	public String getName() {
 		return name;
 	}

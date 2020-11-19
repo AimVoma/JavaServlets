@@ -52,7 +52,6 @@ public class UploadServlet extends HttpServlet {
             part.write(savePath + File.separator + fileName);
         }
         
-        // Redirect->ManageDBServlet
         response.sendRedirect(request.getContextPath() + "/ManageDBServlet");
     }
    

@@ -22,7 +22,7 @@ try{
 	
 	connection = H2Utils.getConnection();
 	statement = connection.createStatement();
-	int verification = statement.executeUpdate(String.format("delete from transactions where id=%s", id));
+	int verification = statement.executeUpdate(String.format("update transactions set visible='false' where id=%s;", id));
 	if (verification == 1)
 		logger.log(Level.INFO, String.format("Deletion of Transaction ID entry %s was done succesfully", id));
 	else
@@ -30,7 +30,9 @@ try{
 } catch (SQLException e) {
 	H2Utils.printSQLException(e);
 } finally{
-	connection.close();
+	if (connection != null)
+		connection.close();
+	
 	request.getRequestDispatcher("/index.jsp").forward(request, response);
 }
 %>

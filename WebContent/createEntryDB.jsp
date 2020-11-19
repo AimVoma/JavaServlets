@@ -31,17 +31,23 @@ Connection connection = null;
 PreparedStatement statement = null;
 ResultSet resultSet = null;
 
+// Table Transactions Visibility column
+boolean visible = true;
+
 try{
 	connection = H2Utils.getConnection();
-	String sqlQuery = "insert into transactions (name, sname, email, street, product, date) values (?, ?, ?, ?, ?, ?);";
+	
+	String sqlQuery = "insert into transactions (name, sname, email, street, product, date, visible) values (?, ?, ?, ?, ?, ?, ?);";
 	
 	statement=connection.prepareStatement(sqlQuery);
-	statement.setString(1, first_name);
-	statement.setString(2, last_name);
-	statement.setString(3, email);
-	statement.setString(4, street);
-	statement.setString(5, product);
-	statement.setDate(	6, date);
+	statement.setString(	1, first_name);
+	statement.setString(	2, last_name);
+	statement.setString(	3, email);
+	statement.setString(	4, street);
+	statement.setString(	5, product);
+	statement.setDate(		6, date);
+	statement.setBoolean(	7, visible);
+	
 	int execVerification = statement.executeUpdate();
 	
 	if(execVerification == 1)
@@ -55,7 +61,8 @@ catch(SQLException sql)
 }
 finally
 {
-	connection.close();
+	if (connection != null)
+		connection.close();
 	request.getRequestDispatcher("/index.jsp").forward(request, response);
 }
 

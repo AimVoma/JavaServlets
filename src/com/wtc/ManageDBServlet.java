@@ -22,15 +22,11 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// TODO: Auto-generated Javadoc
+
 /**
+ *  @author aimilios
  * Servlet implementation class ManageDBServlet.
  */
-/**
- * @author aimilios
- *
- */
-
 @WebServlet("/ManageDBServlet")
 public class ManageDBServlet extends HttpServlet {
 	
@@ -50,7 +46,7 @@ public class ManageDBServlet extends HttpServlet {
 	/**
 	 * Main Servlet GET method to process the uploaded static file and to create JSON object mapper
 	 * to instantiate Database Tables Entry Objects(Clients, Orders, Transactions). Since the tables
-	 * and entries are sucesfully registered, the Servlet performs JOIN operations between tables
+	 * and entries are successfully registered, the Servlet performs JOIN operations between tables
 	 * to create TRANSACTIONS TABLE.
 	 * @param request the request
 	 * @param response the response
